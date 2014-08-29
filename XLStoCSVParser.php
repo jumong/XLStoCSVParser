@@ -17,33 +17,36 @@ class XLStoCSVParser extends Spreadsheet_Excel_Reader
         $this->_fp = fopen($fileCSV, 'w');
         foreach($this->_reader->sheets as $data)
         {
-           foreach($data['cells'] as $row) 
-           {
-               foreach($row as $cell)
-               {
-                   $arrayToCSV = new SplFixedArray(19);
-                   if($this->slashCount($cell) == 0 && array_search($cell, $row) != 3){
-                       break;
+            if(isset($data['cells']))
+            {
+                foreach($data['cells'] as $row) 
+                {
+                   foreach($row as $cell)
+                   {
+                       $arrayToCSV = new SplFixedArray(19);
+                       if($this->slashCount($cell) == 0 && array_search($cell, $row) != 3){
+                           break;
+                       }
+                       if(array_search($cell, $row) == 3){
+                           $seasonvariable = ($this->slashCount($cell) == 1 ? $this->getStringAfterCh($cell, '/') : null );
+                           continue;
+                       }
+                       $arrayToCSV[7] = $seasonvariable;
+                       if($this->slashCount($cell) != 0){
+                           $arrayFromFirstCell = $this->getFirstCell($cell);
+                           $arrayToCSV[4] = (isset($arrayFromFirstCell[0])? $arrayFromFirstCell[0] : null);
+                           $arrayToCSV[5] = (isset($arrayFromFirstCell[1])? $arrayFromFirstCell[1] : null);
+                           $arrayToCSV[6] = (isset($arrayFromFirstCell[2])? $arrayFromFirstCell[2] : null);
+                       }
+                       $arrayToCSV[2] = $row[2];
+                       $arrayToCSV[3] = $row[3];
+                       $arrayToCSV[12] = $row[9];
+                       $arrayToCSV[13] = $row[8];
+                       $arrayToCSV[15] = $row[4];
+                       fputcsv($this->_fp, $arrayToCSV->toArray(), ';', ' ');
                    }
-                   if(array_search($cell, $row) == 3){
-                       $seasonvariable = ($this->slashCount($cell) == 1 ? $this->getStringAfterCh($cell, '/') : null );
-                       continue;
-                   }
-                   $arrayToCSV[7] = $seasonvariable;
-                   if($this->slashCount($cell) != 0){
-                       $arrayFromFirstCell = $this->getFirstCell($cell);
-                       $arrayToCSV[4] = (isset($arrayFromFirstCell[0])? $arrayFromFirstCell[0] : null);
-                       $arrayToCSV[5] = (isset($arrayFromFirstCell[1])? $arrayFromFirstCell[1] : null);
-                       $arrayToCSV[6] = (isset($arrayFromFirstCell[2])? $arrayFromFirstCell[2] : null);
-                   }
-                   $arrayToCSV[2] = $row[2];
-                   $arrayToCSV[3] = $row[3];
-                   $arrayToCSV[12] = $row[9];
-                   $arrayToCSV[13] = $row[8];
-                   $arrayToCSV[15] = $row[4];
-                   fputcsv($this->_fp, $arrayToCSV->toArray(), ';', ' ');
                }
-           }
+            }
         }
         fclose($this->_fp);
     }
