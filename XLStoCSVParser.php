@@ -28,10 +28,23 @@ class XLStoCSVParser extends Spreadsheet_Excel_Reader
                            break;
                        }
                        if(array_search($cell, $row) == 3){
-                           $seasonvariable = ($this->slashCount($cell) == 1 ? $this->getStringAfterCh($cell, '/') : null );
-                           continue;
+                            if(strtolower($cell)== 'грузовые шины'){
+                                $tiresvariable = 'грузовой';
+                                $seasonvariable = null;
+                            }
+                            elseif (strtolower($cell)== 'легкогрузовые шины'){
+                                $tiresvariable = 'легковой';
+                                $seasonvariable = null;
+                            }
+                            else{
+                                $tiresvariable = null;
+                            }
+                            
+                            $seasonvariable = ($cell[0]=='R' ? $this->getStringAfterCh($cell, array('/', ' ')) : null );
+                            continue;
                        }
-                       $arrayToCSV[7] = $seasonvariable;
+                       $arrayToCSV[7] = $this->formatSeasons($seasonvariable);
+                       $arrayToCSV[8] = $tiresvariable;
                        if($this->slashCount($cell) != 0){
                            $arrayFromFirstCell = $this->getFirstCell($cell);
                            $arrayToCSV[4] = (isset($arrayFromFirstCell[0])? $arrayFromFirstCell[0] : null);
@@ -43,6 +56,9 @@ class XLStoCSVParser extends Spreadsheet_Excel_Reader
                        $arrayToCSV[12] = $row[9];
                        $arrayToCSV[13] = $row[8];
                        $arrayToCSV[15] = $row[4];
+                       date_default_timezone_set('Europe/Moscow');
+                       $arrayToCSV[16] = date('d/m/Y G:i:s', time());
+                       $arrayToCSV[18] = $arrayToCSV[2].' '.$arrayToCSV[3].' '.$arrayToCSV[4].'/'.$arrayToCSV[5].' '.($arrayToCSV[6] != null? 'R'.$arrayToCSV[6].' ': '').$arrayToCSV[10].$arrayToCSV[9];
                        fputcsv($this->_fp, $arrayToCSV->toArray(), ';', ' ');
                    }
                }
@@ -61,11 +77,23 @@ class XLStoCSVParser extends Spreadsheet_Excel_Reader
         }
         return $flag;
     }
+    
+    function formatSeasons($str) //returns number of '/' in string
+    {
+        switch (strtolower($str)) {
+            case "лето-всесезонка":
+              return "летн€€-всесезонна€";
+              break;
+            case "зима":
+              return "зимн€€";
+              break;
+        }
+    }
 
-    function getStringAfterCh($str, $ch) //get string After / - R10/simf -> 'simf'
+    function getStringAfterCh($str, $arr) //get string After / - R10/simf -> 'simf'
     {
         for($i=0; $i<strlen($str); $i++){
-            if($str[$i] == $ch && $i != strlen($str)){
+            if(in_array($str[$i],$arr) && $i != strlen($str)){
                 return substr($str, $i+1);
             }
         }
