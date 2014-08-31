@@ -8,7 +8,7 @@ class XLStoCSVParser extends Spreadsheet_Excel_Reader
     function XLStoCSVParser() 
     {
         $this->_reader = new Spreadsheet_Excel_Reader();
-        $this->_reader->setOutputEncoding('Windows-1251');
+        $this->_reader->setOutputEncoding('UTF-8');
     }
 
     function ParseXLStoCSV($fileXLS, $fileCSV)
