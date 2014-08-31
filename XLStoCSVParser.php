@@ -8,7 +8,7 @@ class XLStoCSVParser extends Spreadsheet_Excel_Reader
     function XLStoCSVParser() 
     {
         $this->_reader = new Spreadsheet_Excel_Reader();
-        $this->_reader->setOutputEncoding('Windows-1251');
+        $this->_reader->setOutputEncoding('UTF-8');
     }
 
     function ParseXLStoCSV($fileXLS, $fileCSV)
@@ -28,12 +28,12 @@ class XLStoCSVParser extends Spreadsheet_Excel_Reader
                            break;
                        }
                        if(array_search($cell, $row) == 3){
-                            if(strtolower($cell)== 'грузовые шины'){
-                                $tiresvariable = 'грузовой';
+                            if(strtolower($cell)== 'ГЈГ°ГіГ§Г®ГўГ»ГҐ ГёГЁГ­Г»'){
+                                $tiresvariable = 'ГЈГ°ГіГ§Г®ГўГ®Г©';
                                 $seasonvariable = null;
                             }
-                            elseif (strtolower($cell)== 'легкогрузовые шины'){
-                                $tiresvariable = 'легковой';
+                            elseif (strtolower($cell)== 'Г«ГҐГЈГЄГ®ГЈГ°ГіГ§Г®ГўГ»ГҐ ГёГЁГ­Г»'){
+                                $tiresvariable = 'Г«ГҐГЈГЄГ®ГўГ®Г©';
                                 $seasonvariable = null;
                             }
                             else{
@@ -81,11 +81,11 @@ class XLStoCSVParser extends Spreadsheet_Excel_Reader
     function formatSeasons($str) //returns number of '/' in string
     {
         switch (strtolower($str)) {
-            case "лето-всесезонка":
-              return "летняя-всесезонная";
+            case "Г«ГҐГІГ®-ГўГ±ГҐГ±ГҐГ§Г®Г­ГЄГ ":
+              return "Г«ГҐГІГ­ГїГї-ГўГ±ГҐГ±ГҐГ§Г®Г­Г­Г Гї";
               break;
-            case "зима":
-              return "зимняя";
+            case "Г§ГЁГ¬Г ":
+              return "Г§ГЁГ¬Г­ГїГї";
               break;
         }
     }
