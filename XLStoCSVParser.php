@@ -23,11 +23,12 @@ class XLStoCSVParser extends Spreadsheet_Excel_Reader
                 {
                    foreach($row as $cell)
                    {
-                       $arrayToCSV = new SplFixedArray(19);
                        if($this->slashCount($cell) == 0 && array_search($cell, $row) != 3){
                            break;
                        }
-                       if(array_search($cell, $row) == 3){
+                       
+                       $arrayToCSV = new SplFixedArray(19);
+                       if(array_search($cell, $row) == 3 && sizeof($row) == 1){
                             if(strtolower($cell)== 'грузовые шины'){
                                 $tiresvariable = 'грузовой';
                                 $seasonvariable = null;
@@ -40,10 +41,10 @@ class XLStoCSVParser extends Spreadsheet_Excel_Reader
                                 $tiresvariable = null;
                             }
                             
-                            $seasonvariable = ($cell[0]=='R' ? $this->getStringAfterCh($cell, array('/', ' ')) : null );
+                            $seasonvariable = $this->formatSeasons(($cell[0]=='R' ? $this->getStringAfterCh($cell, array('/', ' ')) : null ));
                             continue;
                        }
-                       $arrayToCSV[7] = $this->formatSeasons($seasonvariable);
+                       $arrayToCSV[7] = $seasonvariable;
                        $arrayToCSV[8] = $tiresvariable;
                        if($this->slashCount($cell) != 0){
                            $arrayFromFirstCell = $this->getFirstCell($cell);
@@ -78,14 +79,18 @@ class XLStoCSVParser extends Spreadsheet_Excel_Reader
         return $flag;
     }
     
-    function formatSeasons($str) //returns number of '/' in string
+    function formatSeasons($str)
     {
-        switch (strtolower($str)) {
+        $strlow = strtolower($str);
+        switch ($strlow) {
             case "лето-всесезонка":
               return "летняя-всесезонная";
               break;
             case "зима":
               return "зимняя";
+              break;
+            default:
+              return $str;
               break;
         }
     }
