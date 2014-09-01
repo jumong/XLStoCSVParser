@@ -52,11 +52,11 @@ class XLStoCSVParser extends Spreadsheet_Excel_Reader
                            $arrayToCSV[5] = (isset($arrayFromFirstCell[1])? $arrayFromFirstCell[1] : null);
                            $arrayToCSV[6] = (isset($arrayFromFirstCell[2])? $arrayFromFirstCell[2] : null);
                        }
-                       $arrayToCSV[2] = $row[2];
-                       $arrayToCSV[3] = $row[3];
-                       $arrayToCSV[12] = $row[9];
-                       $arrayToCSV[13] = $row[8];
-                       $arrayToCSV[15] = $row[4];
+                       $arrayToCSV[2] = isset($row[2]) ? $row[2] : null;
+                       $arrayToCSV[3] = isset($row[3]) ? $row[3] : null;
+                       $arrayToCSV[12] = isset($row[9]) ? $row[9] : null;
+                       $arrayToCSV[13] = isset($row[8]) ? $row[8] : null;
+                       $arrayToCSV[15] = isset($row[4]) ? $row[4] : null;
                        date_default_timezone_set('Europe/Moscow');
                        $arrayToCSV[16] = date('d/m/Y G:i:s', time());
                        $arrayToCSV[18] = $arrayToCSV[2].' '.$arrayToCSV[3].' '.$arrayToCSV[4].'/'.$arrayToCSV[5].' '.($arrayToCSV[6] != null? 'R'.$arrayToCSV[6].' ': '').$arrayToCSV[10].$arrayToCSV[9];
