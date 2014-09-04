@@ -23,28 +23,26 @@ class XLStoCSVParser extends Spreadsheet_Excel_Reader
                 {
                    foreach($row as $cell)
                    {
-                       if($this->slashCount($cell) == 0 && array_search($cell, $row) != 3){
-                           break;
-                       }
-                       
-                       $arrayToCSV = new SplFixedArray(19);
-                       if(array_search($cell, $row) == 3 && sizeof($row) == 1){
-                            if(strtolower($cell)== 'грузовые шины'){
-                                $tiresvariable = 'грузовой';
-                                $seasonvariable = null;
+                        if($this->slashCount($cell) == 0 && array_search($cell, $row) != 3){
+                            break;
+                        }
+                        
+                        $arrayToCSV = new SplFixedArray(19);
+                      
+                        if(array_search($cell, $row) == 3 && sizeof($row) == 1){
+                            $tiresvariable = $this->formatTires($cell);
+                            $seasonvariable = ($cell[0]=='R' ? $this->formatSeasons($this->getStringAfterCh($cell, array('/', ' '))) : 'skip' );
+                            if($tiresvariable == null && $seasonvariable == 'skip'){
+                                $isSkip = true;
+                                break;
                             }
-                            elseif (strtolower($cell)== 'легкогрузовые шины'){
-                                $tiresvariable = 'легковой';
-                                $seasonvariable = null;
-                            }
-                            else{
-                                $tiresvariable = null;
-                            }
-                            
-                            $seasonvariable = $this->formatSeasons(($cell[0]=='R' ? $this->getStringAfterCh($cell, array('/', ' ')) : null ));
+                            $isSkip = false;
                             continue;
                        }
-                       $arrayToCSV[7] = $seasonvariable;
+                       
+                       if($isSkip)break;
+                       
+                       $arrayToCSV[7] = $seasonvariable == 'skip' ? null : $seasonvariable;
                        $arrayToCSV[8] = $tiresvariable;
                        if($this->slashCount($cell) != 0){
                            $arrayFromFirstCell = $this->getFirstCell($cell);
@@ -52,8 +50,8 @@ class XLStoCSVParser extends Spreadsheet_Excel_Reader
                            $arrayToCSV[5] = (isset($arrayFromFirstCell[1])? $arrayFromFirstCell[1] : null);
                            $arrayToCSV[6] = (isset($arrayFromFirstCell[2])? $arrayFromFirstCell[2] : null);
                        }
-                       $arrayToCSV[2] = isset($row[2]) ? $row[2] : null;
-                       $arrayToCSV[3] = isset($row[3]) ? $row[3] : null;
+                       $arrayToCSV[2] = isset($row[2]) ? ltrim($row[2]) : null;
+                       $arrayToCSV[3] = isset($row[3]) ? ltrim($row[3]) : null;
                        $arrayToCSV[12] = isset($row[9]) ? $row[9] : null;
                        $arrayToCSV[13] = isset($row[8]) ? $row[8] : null;
                        $arrayToCSV[15] = isset($row[4]) ? $row[4] : null;
@@ -79,20 +77,16 @@ class XLStoCSVParser extends Spreadsheet_Excel_Reader
         return $flag;
     }
     
+    function formatTires($str)
+    {
+        $trans = array("грузовые шины" => "грузовой", "легкогрузовые шины" => "легковой");
+        return array_key_exists(mb_strtolower($str),$trans)? strtr(mb_strtolower($str), $trans):null;
+    }
+    
     function formatSeasons($str)
     {
-        $strlow = strtolower($str);
-        switch ($strlow) {
-            case "лето-всесезонка":
-              return "летняя-всесезонная";
-              break;
-            case "зима":
-              return "зимняя";
-              break;
-            default:
-              return $str;
-              break;
-        }
+        $trans = array("лето-всесезонка" => "летняя-всесезонная", "зима" => "зимняя");
+        return strtr(mb_strtolower($str), $trans);
     }
 
     function getStringAfterCh($str, $arr) //get string After / - R10/simf -> 'simf'
