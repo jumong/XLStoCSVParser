@@ -79,14 +79,14 @@ class XLStoCSVParser extends Spreadsheet_Excel_Reader
     
     function formatTires($str)
     {
-        $trans = array("грузовые шины" => "грузовой", "легкогрузовые шины" => "легковой");
-        return array_key_exists(mb_strtolower($str),$trans)? strtr(mb_strtolower($str), $trans):null;
+        $trans = array("ГРУЗОВЫЕ ШИНЫ" => "грузовой", "ЛЕГКОГРУЗОВЫЕ ШИНЫ" => "легковой");
+        return array_key_exists($str,$trans)? strtr($str, $trans):null;
     }
     
     function formatSeasons($str)
     {
-        $trans = array("лето-всесезонка" => "летняя-всесезонная", "зима" => "зимняя");
-        return strtr(mb_strtolower($str), $trans);
+        $trans = array("ЛЕТО-ВСЕСЕЗОНКА" => "летняя-всесезонная", "ЗИМА" => "зимняя");
+        return strtr($str, $trans);
     }
 
     function getStringAfterCh($str, $arr) //get string After / - R10/simf -> 'simf'
