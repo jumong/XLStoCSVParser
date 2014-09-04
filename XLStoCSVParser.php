@@ -46,19 +46,19 @@ class XLStoCSVParser extends Spreadsheet_Excel_Reader
                        $arrayToCSV[8] = $tiresvariable;
                        if($this->slashCount($cell) != 0){
                            $arrayFromFirstCell = $this->getFirstCell($cell);
-                           $arrayToCSV[4] = (isset($arrayFromFirstCell[0])? $arrayFromFirstCell[0] : null);
-                           $arrayToCSV[5] = (isset($arrayFromFirstCell[1])? $arrayFromFirstCell[1] : null);
-                           $arrayToCSV[6] = (isset($arrayFromFirstCell[2])? $arrayFromFirstCell[2] : null);
+                           $arrayToCSV[4] = trim(isset($arrayFromFirstCell[0])? $arrayFromFirstCell[0] : null);
+                           $arrayToCSV[5] = trim(isset($arrayFromFirstCell[1])? $arrayFromFirstCell[1] : null);
+                           $arrayToCSV[6] = trim(isset($arrayFromFirstCell[2])? $arrayFromFirstCell[2] : null);
                        }
-                       $arrayToCSV[2] = isset($row[2]) ? ltrim($row[2]) : null;
-                       $arrayToCSV[3] = isset($row[3]) ? ltrim($row[3]) : null;
-                       $arrayToCSV[12] = isset($row[9]) ? $row[9] : null;
-                       $arrayToCSV[13] = isset($row[8]) ? $row[8] : null;
-                       $arrayToCSV[15] = isset($row[4]) ? $row[4] : null;
+                       $arrayToCSV[2] = isset($row[2]) ? trim($row[2]) : null;
+                       $arrayToCSV[3] = isset($row[3]) ? trim($row[3]) : null;
+                       $arrayToCSV[12] = isset($row[9]) ? trim($row[9]): null;
+                       $arrayToCSV[13] = isset($row[8]) ? trim($row[8]) : null;
+                       $arrayToCSV[15] = isset($row[4]) ? trim($row[4]) : null;
                        date_default_timezone_set('Europe/Moscow');
                        $arrayToCSV[16] = date('d/m/Y G:i:s', time());
                        $arrayToCSV[18] = $arrayToCSV[2].' '.$arrayToCSV[3].' '.$arrayToCSV[4].'/'.$arrayToCSV[5].' '.($arrayToCSV[6] != null? 'R'.$arrayToCSV[6].' ': '').$arrayToCSV[10].$arrayToCSV[9];
-                       fputcsv($this->_fp, $arrayToCSV->toArray(), ';', ' ');
+                       fputcsv($this->_fp, $arrayToCSV->toArray(), ';');
                    }
                }
             }
