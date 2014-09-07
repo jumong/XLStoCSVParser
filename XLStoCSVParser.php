@@ -42,6 +42,13 @@ class XLStoCSVParser extends Spreadsheet_Excel_Reader
                        
                        if($isSkip)break;
                        
+                       if (trim($tiresvariable)==''){
+                        $tiresvariable = 'легковой';
+                       }
+                         if (trim($seasonvariable)==''){
+                        $seasonvariable = 'всесезонная';
+                       }
+
                        $arrayToCSV[7] = $seasonvariable == 'skip' ? null : $seasonvariable;
                        $arrayToCSV[8] = $tiresvariable;
                        if($this->slashCount($cell) != 0){
@@ -57,7 +64,7 @@ class XLStoCSVParser extends Spreadsheet_Excel_Reader
                        $arrayToCSV[15] = isset($row[4]) ? trim($row[4]) : null;
                        date_default_timezone_set('Europe/Moscow');
                        $arrayToCSV[16] = date('d/m/Y G:i:s', time());
-                       $arrayToCSV[18] = $arrayToCSV[2].' '.$arrayToCSV[3].' '.$arrayToCSV[4].'/'.$arrayToCSV[5].' '.($arrayToCSV[6] != null? 'R'.$arrayToCSV[6].' ': '').$arrayToCSV[10].$arrayToCSV[9];
+                       $arrayToCSV[18] = $arrayToCSV[3].' '.$arrayToCSV[4].'/'.$arrayToCSV[5].' '.($arrayToCSV[6] != null? 'R'.$arrayToCSV[6].' ': '').$arrayToCSV[10].$arrayToCSV[9];
                        fputcsv($this->_fp, $arrayToCSV->toArray(), ';');
                    }
                }
